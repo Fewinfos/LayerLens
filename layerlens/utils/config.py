@@ -37,6 +37,14 @@ class LayerLensConfig:
         """Convert config to dictionary."""
         return asdict(self)
     
+    def get(self, key, default=None):
+        """Get a configuration value."""
+        return getattr(self, key, default)
+    
+    def set(self, key, value):
+        """Set a configuration value."""
+        setattr(self, key, value)
+    
     def save(self, file_path):
         """Save config to file."""
         ext = os.path.splitext(file_path)[1].lower()

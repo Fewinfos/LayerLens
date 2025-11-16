@@ -1,16 +1,25 @@
+# Core dependencies
 numpy>=1.19.0
 scipy>=1.5.0
 pandas>=1.1.0
 scikit-learn>=0.24.0
-matplotlib>=3.3.0
-seaborn>=0.11.0
-plotly>=4.14.0
-streamlit>=1.0.0
-torch>=1.8.0
-tensorflow>=2.4.0
-shap>=0.39.0
-lime>=0.2.0
 networkx>=2.5.0
+pyyaml>=5.4.0
+
+# Visualization dependencies
+matplotlib>=3.3.0
+plotly>=4.14.0
+dash>=2.0.0
+seaborn>=0.11.0
+
+# Optional ML framework dependencies (choose one or both)
+# torch>=1.8.0
+# tensorflow>=2.4.0
+
+# Optional explainability dependencies
+# shap>=0.39.0
+# lime>=0.2.0
+
+# Development dependencies
 pytest>=6.2.0
 tqdm>=4.50.0
-pillow>=8.0.0

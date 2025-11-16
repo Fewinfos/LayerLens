@@ -8,6 +8,37 @@ import plotly.express as px
 import matplotlib.pyplot as plt
 from matplotlib import cm
 
+def generate_activation_heatmap(activations, layer_name=None, input_image=None, overlay=False):
+    """
+    Generate a heatmap visualization of layer activations.
+    
+    Args:
+        activations: Layer activation values
+        layer_name: Name of the layer (for the title)
+        input_image: Original input image (for overlay)
+        overlay: Whether to overlay heatmap on the input image
+        
+    Returns:
+        Plotly figure with the heatmap
+    """
+    # Prepare the activations for visualization
+    prepared_data = _prepare_activation_data(activations)
+    
+    # Create the title
+    if layer_name:
+        title = f"Activation Heatmap - {layer_name}"
+    else:
+        title = "Activation Heatmap"
+    
+    # Create the heatmap figure
+    if overlay and input_image is not None:
+        fig = _create_overlay_heatmap(prepared_data, input_image, title)
+    else:
+        fig = _create_standard_heatmap(prepared_data, title)
+    
+    return fig
+
+# Alias for backward compatibility
 def generate_heatmap(activations, layer_name=None, input_image=None, overlay=False):
     """
     Generate a heatmap visualization of layer activations.

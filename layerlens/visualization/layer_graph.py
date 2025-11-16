@@ -6,6 +6,46 @@ import plotly.graph_objects as go
 import networkx as nx
 import numpy as np
 
+
+class LayerGraphVisualizer:
+    """Visualizer for model layer graphs."""
+    
+    def __init__(self, model=None):
+        """
+        Initialize the layer graph visualizer.
+        
+        Args:
+            model: Model to visualize (optional)
+        """
+        self.model = model
+        self.graph = None
+        
+    def build_graph(self, model=None):
+        """Build a graph from the model structure."""
+        if model is None:
+            model = self.model
+        if model is None:
+            raise ValueError("No model provided")
+        
+        self.graph = build_layer_graph(model)
+        return self.graph
+        
+    def plot(self, highlight_layers=None, figsize=(12, 8)):
+        """Plot the layer graph."""
+        if self.graph is None and self.model is not None:
+            self.build_graph()
+        
+        return plot_layer_graph(self.model, highlight_layers, figsize)
+        
+    def visualize(self, output_path=None, highlight_layers=None):
+        """Create and optionally save visualization."""
+        fig = self.plot(highlight_layers=highlight_layers)
+        
+        if output_path:
+            fig.write_html(output_path)
+        
+        return fig
+
 def plot_layer_graph(model, highlight_layers=None, figsize=(12, 8)):
     """
     Create a graph visualization of model layers.

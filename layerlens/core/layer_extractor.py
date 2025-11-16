@@ -71,20 +71,82 @@ class LayerExtractor:
     def _register_tensorflow_hooks(self):
         """Register hooks for TensorFlow/Keras models."""
         import tensorflow as tf
+        import numpy as np
         
-        # Check if model is Sequential or Functional
+        # Ensure the model is fully built before creating hooks
+        # Check multiple indicators of whether the model is built
+        model_is_built = False
+        
+        # Method 1: Check if first layer has inbound nodes
+        if hasattr(self.model, 'layers') and len(self.model.layers) > 0:
+            first_layer = self.model.layers[0]
+            if hasattr(first_layer, '_inbound_nodes') and len(first_layer._inbound_nodes) > 0:
+                model_is_built = True
+        
+        # Method 2: Try to access model.input
+        if not model_is_built:
+            try:
+                _ = self.model.input
+                model_is_built = True
+            except (AttributeError, ValueError):
+                pass
+        
+        # If model is not built, try to build it
+        if not model_is_built:
+            if hasattr(self.model, 'layers') and len(self.model.layers) > 0:
+                first_layer = self.model.layers[0]
+                
+                # Get input shape
+                input_shape = None
+                if hasattr(first_layer, 'input_shape') and first_layer.input_shape:
+                    input_shape = first_layer.input_shape
+                elif hasattr(first_layer, 'batch_input_shape') and first_layer.batch_input_shape:
+                    input_shape = first_layer.batch_input_shape
+                
+                if input_shape and None not in input_shape[1:]:
+                    try:
+                        # Build with a dummy input
+                        dummy_input = np.zeros((1,) + input_shape[1:], dtype=np.float32)
+                        _ = self.model(dummy_input, training=False)
+                        print(f"✓ LayerExtractor auto-built model with input shape: {input_shape}")
+                        model_is_built = True
+                    except Exception as e:
+                        print(f"Warning: Failed to auto-build model: {e}")
+        
+        # Now try to create intermediate models for each layer
         if hasattr(self.model, 'layers'):
-            # For each layer, create an intermediate model that outputs that layer
+            successful_hooks = 0
+            failed_hooks = 0
+            
             for i, layer in enumerate(self.model.layers):
                 layer_name = layer.name
                 if self.layers is None or layer_name in self.layers:
-                    # Create an intermediate model
-                    intermediate_model = tf.keras.Model(
-                        inputs=self.model.input,
-                        outputs=layer.output,
-                        name=f"intermediate_{layer_name}"
-                    )
-                    self.hooks[layer_name] = intermediate_model
+                    try:
+                        # Create an intermediate model
+                        intermediate_model = tf.keras.Model(
+                            inputs=self.model.input,
+                            outputs=layer.output,
+                            name=f"intermediate_{layer_name}"
+                        )
+                        self.hooks[layer_name] = intermediate_model
+                        successful_hooks += 1
+                    except (AttributeError, ValueError) as e:
+                        # If model input is not defined, skip this layer with a warning
+                        failed_hooks += 1
+                        if failed_hooks == 1:  # Only print detailed warning once
+                            print(f"Warning: Could not create hooks for layers. Error: {e}")
+                            if not model_is_built:
+                                print(f"Hint: Model may not be fully built. Trying alternative extraction method...")
+                        continue
+            
+            # If all hooks failed, use alternative extraction method
+            if successful_hooks == 0 and len(self.model.layers) > 0:
+                print("Using alternative layer extraction method...")
+                self._use_alternative_extraction = True
+            else:
+                self._use_alternative_extraction = False
+                if successful_hooks > 0:
+                    print(f"✓ Successfully created hooks for {successful_hooks} layers")
     
     def extract(self, data):
         """
@@ -117,12 +179,41 @@ class LayerExtractor:
             return self.layer_outputs
             
         elif self.framework == 'tensorflow':
-            # For TensorFlow, run each intermediate model
+            # Check if we need to use alternative extraction
+            if hasattr(self, '_use_alternative_extraction') and self._use_alternative_extraction:
+                return self._extract_alternative(data)
+            
+            # Standard method: run each intermediate model
             layer_outputs = {}
             for layer_name, intermediate_model in self.hooks.items():
-                layer_outputs[layer_name] = intermediate_model.predict(data)
+                layer_outputs[layer_name] = intermediate_model.predict(data, verbose=0)
             
             return layer_outputs
+    
+    def _extract_alternative(self, data):
+        """
+        Alternative extraction method for models where intermediate models can't be created.
+        Uses manual forward pass through layers.
+        """
+        import tensorflow as tf
+        
+        layer_outputs = {}
+        current_output = data
+        
+        # Pass through each layer sequentially
+        for layer in self.model.layers:
+            if self.layers is None or layer.name in self.layers:
+                try:
+                    current_output = layer(current_output, training=False)
+                    layer_outputs[layer.name] = current_output.numpy() if hasattr(current_output, 'numpy') else current_output
+                except Exception as e:
+                    print(f"Warning: Could not extract output for layer '{layer.name}': {e}")
+                    continue
+            else:
+                # Still need to pass through the layer even if we're not extracting its output
+                current_output = layer(current_output, training=False)
+        
+        return layer_outputs
     
     def register_hook(self, layer_name, hook_fn):
         """
