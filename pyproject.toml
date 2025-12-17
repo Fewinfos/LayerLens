@@ -1,0 +1,132 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "layerlens"
+version = "0.1.1"
+description = "A library for layer-by-layer explainability of deep learning models"
+authors = [
+    { name="navi-04", email="naveenrajthiyagarajan6@gmail.com" }
+]
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.7"
+keywords = [
+    "explainable-ai",
+    "deep-learning",
+    "interpretability",
+    "xai",
+    "layer-wise-analysis",
+    "surrogate-models",
+    "pytorch",
+    "tensorflow"
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "numpy>=1.19.0",
+    "scipy>=1.5.0",
+    "pandas>=1.1.0",
+    "scikit-learn>=0.24.0",
+    "networkx>=2.5.0",
+    "pyyaml>=5.4.0",
+    "matplotlib>=3.3.0",
+    "plotly>=4.14.0",
+    "dash>=2.0.0",
+    "seaborn>=0.11.0",
+    "pytest>=6.2.0",
+    "tqdm>=4.50.0",
+]
+
+[project.optional-dependencies]
+pytorch = [
+    "torch>=1.8.0",
+    "torchvision>=0.9.0",
+]
+tensorflow = [
+    "tensorflow>=2.4.0",
+]
+all = [
+    "torch>=1.8.0",
+    "torchvision>=0.9.0",
+    "tensorflow>=2.4.0",
+    "shap>=0.39.0",
+    "lime>=0.2.0",
+]
+dev = [
+    "pytest>=6.2.0",
+    "pytest-cov>=2.12.0",
+    "black>=21.0",
+    "flake8>=3.9.0",
+    "sphinx>=4.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/navi-04/LayerLens"
+Documentation = "https://github.com/navi-04/LayerLens/blob/main/USAGE.md"
+Repository = "https://github.com/navi-04/LayerLens"
+"Bug Tracker" = "https://github.com/navi-04/LayerLens/issues"
+
+[tool.setuptools]
+packages = ["layerlens", "layerlens.core", "layerlens.visualization", "layerlens.monitoring", "layerlens.utils"]
+
+[tool.setuptools.package-data]
+layerlens = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --cov=layerlens --cov-report=term-missing"
+
+[tool.black]
+line-length = 100
+target-version = ["py37", "py38", "py39", "py310", "py311"]
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 100
+multi_line_output = 3
+include_trailing_comma = true
+
+[tool.coverage.run]
+source = ["layerlens"]
+omit = [
+    "*/tests/*",
+    "*/__pycache__/*",
+    "*/site-packages/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]

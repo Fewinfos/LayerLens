@@ -1,3 +1,65 @@
+Metadata-Version: 2.4
+Name: layerlens
+Version: 0.1.0
+Summary: A library for layer-by-layer explainability of deep learning models
+Home-page: https://github.com/navi-04/layerlens
+Author: navi-04
+Author-email: LayerLens Team <info@layerlens.ai>
+License: MIT
+Project-URL: Homepage, https://github.com/navi-04/LayerLens
+Project-URL: Documentation, https://github.com/navi-04/LayerLens/blob/main/USAGE.md
+Project-URL: Repository, https://github.com/navi-04/LayerLens
+Project-URL: Bug Tracker, https://github.com/navi-04/LayerLens/issues
+Keywords: explainable-ai,deep-learning,interpretability,xai,layer-wise-analysis,surrogate-models,pytorch,tensorflow
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy>=1.19.0
+Requires-Dist: scipy>=1.5.0
+Requires-Dist: pandas>=1.1.0
+Requires-Dist: scikit-learn>=0.24.0
+Requires-Dist: networkx>=2.5.0
+Requires-Dist: pyyaml>=5.4.0
+Requires-Dist: matplotlib>=3.3.0
+Requires-Dist: plotly>=4.14.0
+Requires-Dist: dash>=2.0.0
+Requires-Dist: seaborn>=0.11.0
+Requires-Dist: pytest>=6.2.0
+Requires-Dist: tqdm>=4.50.0
+Provides-Extra: pytorch
+Requires-Dist: torch>=1.8.0; extra == "pytorch"
+Requires-Dist: torchvision>=0.9.0; extra == "pytorch"
+Provides-Extra: tensorflow
+Requires-Dist: tensorflow>=2.4.0; extra == "tensorflow"
+Provides-Extra: all
+Requires-Dist: torch>=1.8.0; extra == "all"
+Requires-Dist: torchvision>=0.9.0; extra == "all"
+Requires-Dist: tensorflow>=2.4.0; extra == "all"
+Requires-Dist: shap>=0.39.0; extra == "all"
+Requires-Dist: lime>=0.2.0; extra == "all"
+Provides-Extra: dev
+Requires-Dist: pytest>=6.2.0; extra == "dev"
+Requires-Dist: pytest-cov>=2.12.0; extra == "dev"
+Requires-Dist: black>=21.0; extra == "dev"
+Requires-Dist: flake8>=3.9.0; extra == "dev"
+Requires-Dist: sphinx>=4.0.0; extra == "dev"
+Dynamic: author
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+
 # LayerLens
 
 LayerLens is a powerful library for layer-by-layer explainability of deep learning models. It provides insights into how models make decisions by analyzing the behavior of individual layers.
@@ -124,11 +186,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 If you use LayerLens in your research, please cite:
 
 ```bibtex
-@software{layerlens,
+@software{layerlens2024,
   title = {LayerLens: Layer-by-Layer Explainability for Deep Learning},
-  author = {navi-04},
-  year = {2025},
-  url = {https://github.com/navi-04/LayerLens}
+  author = {LayerLens Team},
+  year = {2024},
+  url = {https://github.com/your-username/LayerLens}
 }
 ```
 D:/GitHub/LayerLens/.venv/Scripts/python.exe -m jupyter notebook mnist_demo.ipynb
