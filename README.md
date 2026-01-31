@@ -5,6 +5,7 @@ LayerLens is a powerful library for layer-by-layer explainability of deep learni
 [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+![Repository Stats](https://github-repo-readme-stats.vercel.app/api/?username=fewinfos&repo=layerlens&theme=tokyonight)
 ## Features
 
 - **Layer-wise Explanation**: Generate surrogate models for each layer to explain its behavior
